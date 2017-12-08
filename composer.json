@@ -1,0 +1,21 @@
+{
+    "name": "sunnnnn/yii2-widgets-fileinput",
+    "description": "fileinput widget for yii2-admin or Yii2 frame",
+    "keywords": ["yii2", "widget", "fileinput"],
+    "type": "yii2-widgets",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "sunnnnn",
+            "email": "mrsunnnnn@qq.com"
+        }
+    ],
+    "require": {
+		"php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "sunnnnn\\fileinput\\": ""
+        }
+    }
+}
