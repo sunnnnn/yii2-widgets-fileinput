@@ -1,9 +1,7 @@
 <?php
 namespace sunnnnn\fileinput; 
 
-use Yii;
 use yii\helpers\Html; 
-use yii\helpers\Json;
 use yii\widgets\InputWidget; 
 
 /**
@@ -80,6 +78,8 @@ class FileInput extends InputWidget{
      * @var array
      */
     public $_preview = [];
+    public $_previewAsData = true;
+    public $_previewOverwrite= false;
     /**
      * 一次上传的最大上传文件数量
      * @var unknown
@@ -127,17 +127,17 @@ class FileInput extends InputWidget{
             'previewFileType' => $this->_previewType,
             'allowedFileExtensions' => $this->_extensions,
             'minFileCount' => $this->_minFileCount,
-            'maxFileCount' => $this->_maxFileCount
+            'maxFileCount' => $this->_maxFileCount,
+            'initialPreviewAsData' => $this->_previewAsData,
+            'overwriteInitial' => $this->_previewOverwrite
         ];
         
         if(!empty($this->_preview) && is_array($this->_preview)){
-            $_result = $this->generatePreview($this->_preview);
+            $_result = FileHelper::generatePreview($this->_preview);
             
             if(!empty($_result['url'])){
                 $options['initialPreview'] = $_result['url'];
                 $options['initialPreviewConfig'] = $_result['config'];
-                $options['initialPreviewAsData'] = true;
-                $options['overwriteInitial'] = false;
             }
         }
         
@@ -145,48 +145,14 @@ class FileInput extends InputWidget{
             $options = $this->_optionsMerge === true ? array_merge($options, $this->_options) : $this->_options;
         }
         
+        $jsonOptions = FileHelper::jsonEncode($options);
+        
         $js = <<<JS
             $(function(){
-                $('#{$this->options['id']}').fileinput({$this->jsonEncode($options)});
+                $('#{$this->options['id']}').fileinput({$jsonOptions});
         	});
 JS;
         $view->registerJs($js, $view::POS_END);
-    }
-    
-    private function jsonEncode($array){
-        return json::encode($array);
-    }
-    
-    private function generatePreview($preview = []){
-        $_url = $_config = [];
-        if(!empty($preview) && is_array($preview)){
-            foreach($preview as $key => $val){
-                if(!empty($val['url'])){
-                    $_url[] = $val['url'];
-                    $_tmp = [
-                        'key' => isset($val['key']) ? $val['key'] : (isset($val['id']) ? $val['id'] : $key),
-                        'caption' => isset($val['caption']) ? $val['caption'] : (isset($val['name']) ? $val['name'] : ''),
-                        'url' => isset($val['delete']) ? $val['delete'] : '',
-                        'downloadUrl' => isset($val['download']) && $val['download'] === true ? $val['url'] : false,
-                    ];
-                    if(isset($val['type'])){
-                        $_tmp['type'] = $val['type'];
-                    }
-                    if(isset($val['filetype'])){
-                        $_tmp['filetype'] = $val['filetype'];
-                    }
-                    if(isset($val['data'])){
-                        $_tmp['extra'] = $val['data'];
-                    }
-                    if(isset($val['size'])){
-                        $_tmp['size'] = $val['size'];
-                    }
-                    $_config[] = $_tmp;
-                }
-            }
-        }
-        
-        return ['url' => $_url, 'config' => $_config];
     }
     
 }
