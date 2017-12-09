@@ -6,6 +6,14 @@ use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\InputWidget; 
 
+/**
+ * http://plugins.krajee.com/file-input
+ * https://github.com/sunnnnn/yii2-widgets-fileinput
+ * 
+* @use: 
+* @date: 2017年12月8日 下午1:24:21
+* @author: sunnnnn [www.sunnnnn.com] [mrsunnnnn@qq.com]
+ */
 class FileInput extends InputWidget{
     /**
      * @var string
@@ -46,6 +54,11 @@ class FileInput extends InputWidget{
      * @var string
      */
     public $_previewType = 'image';
+    /**
+     * 上传时附加信息
+     * @var array
+     */
+    public $_data = [];
     /**
      * 原生配置
      * @var array
@@ -106,6 +119,7 @@ class FileInput extends InputWidget{
         
         $options = [
             'uploadUrl' => $this->_action,
+            'uploadExtraData' => $this->_data,
             'language' => $this->_language,
             'msgPlaceholder' => $this->_placeholder,
             'mainClass' => $this->_class,
