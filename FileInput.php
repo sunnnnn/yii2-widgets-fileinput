@@ -53,6 +53,17 @@ class FileInput extends InputWidget{
      */
     public $_previewType = 'image';
     /**
+     * icon  ,  '_previewType' => 'other'
+     * @var array
+     */
+    public $_previewIcons = [
+        'doc' => '<i class="fa fa-file-word-o text-primary"></i>',
+        'docx' => '<i class="fa fa-file-word-o text-primary"></i>',
+        'xls' => '<i class="fa fa-file-excel-o text-success"></i>',
+        'xlsx' => '<i class="fa fa-file-excel-o text-success"></i>',
+        'txt' => '<i class="fa fa-file-text-o text-info"></i>'
+    ];
+    /**
      * 上传时附加信息
      * @var array
      */
@@ -129,7 +140,8 @@ class FileInput extends InputWidget{
             'minFileCount' => $this->_minFileCount,
             'maxFileCount' => $this->_maxFileCount,
             'initialPreviewAsData' => $this->_previewAsData,
-            'overwriteInitial' => $this->_previewOverwrite
+            'overwriteInitial' => $this->_previewOverwrite,
+            'previewFileIconSettings' => $this->_previewIcons
         ];
         
         if(!empty($this->_preview) && is_array($this->_preview)){
