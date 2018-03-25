@@ -14,6 +14,26 @@ use yii\widgets\InputWidget;
  */
 class FileInput extends InputWidget{
     /**
+     * 纯净版，为true时，所有参数都需要自定义
+     * @var boolean
+     */
+    public $_pure = false;
+    /**
+     * 展示预览模式
+     * @var boolean
+     */
+    public $_modeView = false;
+    /**
+     * form表单上传模式
+     * @var boolean
+     */
+    public $_modeForm = false;
+    /**
+     * ajax上传模式
+     * @var boolean
+     */
+    public $_modeAjax = true;
+    /**
      * @var string
      */
     public $_action      = null;
@@ -26,7 +46,7 @@ class FileInput extends InputWidget{
      * 占位符
      * @var string
      */
-    public $_placeholder = '请选择文件进行上传';
+    public $_placeholder = '';
     /**
      * 语言，默认中文
      * @var string
@@ -109,7 +129,7 @@ class FileInput extends InputWidget{
     
     public function renderWidget(){
         
-        if($this->_multiple === true){
+        if($this->_multiple === true && $this->_pure === false){
             $this->options['multiple'] = true;
         }
         
@@ -128,29 +148,66 @@ class FileInput extends InputWidget{
         
         FileInputAsset::register($view);
         
-        $options = [
-            'uploadUrl' => $this->_action,
-            'uploadExtraData' => $this->_data,
-            'language' => $this->_language,
-            'msgPlaceholder' => $this->_placeholder,
-            'mainClass' => $this->_class,
-            'showPreview' => $this->_showPreview,
-            'previewFileType' => $this->_previewType,
-            'allowedFileExtensions' => $this->_extensions,
-            'minFileCount' => $this->_minFileCount,
-            'maxFileCount' => $this->_maxFileCount,
-            'initialPreviewAsData' => $this->_previewAsData,
-            'overwriteInitial' => $this->_previewOverwrite,
-            'previewFileIconSettings' => $this->_previewIcons
-        ];
-        
-        if(!empty($this->_preview) && is_array($this->_preview)){
-            $_result = FileHelper::generatePreview($this->_preview);
+        if($this->_pure === false){
             
-            if(!empty($_result['url'])){
-                $options['initialPreview'] = $_result['url'];
-                $options['initialPreviewConfig'] = $_result['config'];
+            if($this->_modeView === true){
+                $options = [
+                    'uploadUrl' => null,
+                    'showClose' => false,
+                    'showCaption' => false,
+                    'showBrowse' => false,
+                    'showUpload' => false,
+                    'showRemove' => false,
+                    'language' => $this->_language,
+                    'mainClass' => $this->_class,
+                    'showPreview' => $this->_showPreview,
+                    'previewFileType' => $this->_previewType,
+                    'initialPreviewAsData' => $this->_previewAsData,
+                    'previewFileIconSettings' => $this->_previewIcons
+                ];
+            }elseif($this->_modeForm === true){
+                $options = [
+                    'showUpload' => false,
+                    'language' => $this->_language,
+                    'msgPlaceholder' => $this->_placeholder,
+                    'mainClass' => $this->_class,
+                    'showPreview' => $this->_showPreview,
+                    'previewFileType' => $this->_previewType,
+                    'allowedFileExtensions' => $this->_extensions,
+                    'initialPreviewAsData' => $this->_previewAsData,
+                    'previewFileIconSettings' => $this->_previewIcons
+                ];
+                
+            }elseif($this->_modeAjax === true){
+                $options = [
+                    'uploadUrl' => $this->_action,
+                    'uploadExtraData' => $this->_data,
+                    'language' => $this->_language,
+                    'msgPlaceholder' => $this->_placeholder,
+                    'mainClass' => $this->_class,
+                    'showPreview' => $this->_showPreview,
+                    'previewFileType' => $this->_previewType,
+                    'allowedFileExtensions' => $this->_extensions,
+                    'minFileCount' => $this->_minFileCount,
+                    'maxFileCount' => $this->_maxFileCount,
+                    'initialPreviewAsData' => $this->_previewAsData,
+                    'overwriteInitial' => $this->_previewOverwrite,
+                    'previewFileIconSettings' => $this->_previewIcons
+                ];
+            }else{
+                $options = [];
             }
+            
+            if(!empty($this->_preview) && is_array($this->_preview)){
+                $_result = FileHelper::generatePreview($this->_preview);
+                
+                if(!empty($_result['url'])){
+                    $options['initialPreview'] = $_result['url'];
+                    $options['initialPreviewConfig'] = $_result['config'];
+                }
+            }
+        }else{
+            $options = [];
         }
         
         if(!empty($this->_options)){
