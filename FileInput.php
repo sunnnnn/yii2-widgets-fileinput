@@ -124,6 +124,9 @@ class FileInput extends InputWidget{
     
     public function run(){
         parent::run();
+        if(in_array($this->_language, ['zh', 'zh-cn', 'zh-CN'])){
+            $this->_language = 'zh';
+        }
         $this->renderWidget();
     }
     
